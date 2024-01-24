@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Word Finder</title>
+
+
+    <!-- Load any supplemental Javascript libraries here -->
+
+
+    <script type="text/javascript" src="jquery-1.5.min.js"></script>
+    <script type="text/javascript" src="words-small.json"></script>
+    <script type="text/javascript" src="dictionary.js"></script>
+
+
+
+
+
+    <script type="text/javascript">
+        // This allows the Javascript code inside this block to only run when the page
+        // has finished loading in the browser.
+        $(document).ready(function () {
+            var wordArray = [];
+
+            $.getJSON('words-small.json', function (data) {
+               
+                $.each(data.words, function (index, word) {  // Puts words from file into the wordArray
+                    wordArray.push(word);
+                });
+
+                var dict = new Dictionary(wordArray);
+                var userInput = document.getElementById('inputs');
+
+                function changeFunction() { // function that will be run every key
+                    userInput = document.getElementById('inputs');
+                    var newArray = dict.search(userInput.value); 
+
+                    var selectElement = document.getElementById("table");
+
+                    
+                    selectElement.innerHTML = '';
+
+                    newArray.forEach(function (word) {
+                        var option = document.createElement("option");
+                        option.text = word;
+                        selectElement.add(option);
+                    });
+
+                    var total = newArray.length; 
+                    document.getElementById("myTotal").innerHTML = total; //updates total words
+                }
+
+                changeFunction(); //initial table initilization
+                userInput.addEventListener('input', changeFunction);
+            });
+        });
+    </script>
+
+
+
+
+    <style type="text/css">
+
+        /* Your CSS here */
+
+        div {
+            width: 800px;
+            height: 800px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background-color: #808080;
+        }
+
+        body {
+            text-align: center;
+            font-size: 15px
+        }
+
+        html {
+        }
+
+        form {
+            margin: 10px;
+        }
+
+        select {
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+
+
+
+</head>
+<body>
+    <div>
+
+        <form>
+
+            Find: <input id="inputs" type="text" onchange="changeFunction()" />
+
+            <input type="reset" value="Clear">
+
+
+        </form>
+
+        <h2> <span id="myTotal"></span> Words Total </h2>
+
+
+        <select id="table" size="8">
+
+
+        </select>
+    </div>
+
+
+</body>
+</html>
